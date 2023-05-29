@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_CITIES 1000
+#define INF 9999999
+
+typedef struct {
+    int city;
+    int time;
+} Edge;
+
+typedef struct {
+    int city;
+    int time;
+} Node;
+
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+int dijkstra(int graph[MAX_CITIES][MAX_CITIES], int n, int src, int dest, int avoid) {
+    int dist[MAX_CITIES];
+    int visited[MAX_CITIES] = {0};
+
+    for (int i = 1; i <= n; i++)
+        dist[i] = INF;
+
+    dist[src] = 0;
+
+    Node queue[MAX_CITIES];
+    int front = 0, rear = 0;
+    queue[rear++] = (Node){src, 0};
+
+    while (front != rear) {
+        Node current = queue[front++];
+        int u = current.city;
+        int time = current.time;
+
+        if (u == dest)
+            return dist[u];
+
+        visited[u] = 1;
+
+        for (int v = 1; v <= n; v++) {
+            if (graph[u][v] == 0 || visited[v] || v == avoid)
+                continue;
+
+            int newTime = time + graph[u][v];
+
+            if (newTime < dist[v]) {
+                dist[v] = newTime;
+                queue[rear++] = (Node){v, newTime};
+            }
+        }
+    }
+
+    return INF;
+}
+
+int main() {
+    int n, m;
+
+    while (scanf("%d %d", &n, &m) == 2) {
+        int graph[MAX_CITIES][MAX_CITIES] = {0};
+
+        for (int i = 0; i < m; i++) {
+            int a, b;
+            scanf("%d %d", &a, &b);
+            graph[a][b] = 1;
+            graph[b][a] = 1;
+        }
+
+        int c, r, e;
+        scanf("%d %d %d", &c, &r, &e);
+
+        int minTime = dijkstra(graph, n, c, r, e);
+        printf("%d\n", minTime);
+    }
+
+    return 0;
+}
