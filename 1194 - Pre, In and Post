@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Node {
+    char data;
+    struct Node* left;
+    struct Node* right;
+};
+
+struct Node* newNode(char data) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+int findIndex(char arr[], int start, int end, char value) {
+    int i;
+    for (i = start; i <= end; i++) {
+        if (arr[i] == value)
+            return i;
+    }
+    return -1;
+}
+
+struct Node* buildTree(char inOrder[], char preOrder[], int inStart, int inEnd, int* preIndex) {
+    if (inStart > inEnd)
+        return NULL;
+
+    struct Node* node = newNode(preOrder[*preIndex]);
+    (*preIndex)++;
+
+    if (inStart == inEnd)
+        return node;
+
+    int inIndex = findIndex(inOrder, inStart, inEnd, node->data);
+
+    node->left = buildTree(inOrder, preOrder, inStart, inIndex - 1, preIndex);
+    node->right = buildTree(inOrder, preOrder, inIndex + 1, inEnd, preIndex);
+
+    return node;
+}
+
+void postOrderTraversal(struct Node* node) {
+    if (node == NULL)
+        return;
+
+    postOrderTraversal(node->left);
+
+    postOrderTraversal(node->right);
+
+    printf("%c", node->data);
+}
+
+void computePostOrderTraversal(int n, char preOrder[], char inOrder[]) {
+    struct Node* root = NULL;
+    int preIndex = 0;
+
+    root = buildTree(inOrder, preOrder, 0, n - 1, &preIndex);
+
+    postOrderTraversal(root);
+
+    free(root);
+}
+
+int main() {
+    int c;
+    scanf("%d", &c);
+
+    while (c--) {
+        int n;
+        scanf("%d", &n);
+
+        char preOrder[n + 1];
+        char inOrder[n + 1];
+
+        scanf("%s", preOrder);
+        scanf("%s", inOrder);
+
+        computePostOrderTraversal(n, preOrder, inOrder);
+
+        printf("\n");
+    }
+
+    return 0;
+}
