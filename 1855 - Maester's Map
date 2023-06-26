@@ -1,0 +1,58 @@
+#include <stdio.h>
+
+#define MAX_WIDTH 100
+#define MAX_HEIGHT 100
+
+char verifyMap(int width, int height, char map[MAX_HEIGHT][MAX_WIDTH]) {
+    int x = 0, y = 0;  // Coordenadas iniciais
+    int visited[MAX_HEIGHT][MAX_WIDTH] = {0};
+
+    while (x >= 0 && x < width && y >= 0 && y < height) {
+        if (visited[y][x]) {
+            return '!';
+        }
+
+        visited[y][x] = 1;
+
+        char currentSymbol = map[y][x];
+
+        if (currentSymbol == '>') {
+            x++;
+        } else if (currentSymbol == '<') {
+            x--;
+        } else if (currentSymbol == 'v') {
+            y++;
+        } else if (currentSymbol == '^') {
+            y--;
+        } else if (currentSymbol == '*') {
+            if ((x == width - 1 && y == height - 1) || (x == width - 1 && y == 0) ||
+                (x == 0 && y == height - 1)) {
+                return '*';
+            } else {
+                return '!';
+            }
+        } else {
+            return '!';
+        }
+    }
+
+    return '!';
+}
+
+int main() {
+    int width, height;
+    char map[MAX_HEIGHT][MAX_WIDTH];
+
+    scanf("%d", &width);
+    scanf("%d", &height);
+
+    for (int i = 0; i < height; i++) {
+        scanf("%s", map[i]);
+    }
+
+    char result = verifyMap(width, height, map);
+
+    printf("%c\n", result);
+
+    return 0;
+}
