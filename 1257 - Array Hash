@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+int main() {
+    int numTestCases;
+    scanf("%d", &numTestCases);
+    
+    while (numTestCases > 0) {
+        int numLines;
+        scanf("%d", &numLines);
+        
+        int i, j, k, value, hash = 0;
+        char input[51];
+        
+        for (i = 0; i < numLines; i++) {
+            scanf("%s", input);
+            
+            for (j = 0; input[j] != '\0'; j++) {
+                value = input[j] - 'A' + j + i;
+                hash += value;
+            }
+        }
+        
+        printf("%d\n", hash);
+        
+        numTestCases--;
+    }
+    
+    return 0;
+}
