@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_LANG_LEN 21
+
+int main() {
+    int testCases, numPeople;
+    char language[MAX_LANG_LEN];
+    char commonLanguage[MAX_LANG_LEN];
+    int i, j, k;
+
+    scanf("%d", &testCases);
+
+    for (i = 0; i < testCases; i++) {
+        scanf("%d", &numPeople);
+        scanf("%s", commonLanguage);
+
+        for (j = 1; j < numPeople; j++) {
+            scanf("%s", language);
+
+            if (strcmp(commonLanguage, language) != 0)
+                strcpy(commonLanguage, "ingles");
+        }
+
+        printf("%s\n", commonLanguage);
+    }
+
+    return 0;
+}
