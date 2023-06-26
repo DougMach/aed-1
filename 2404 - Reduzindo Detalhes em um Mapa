@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <limits.h>
+
+#define MAX_CITIES 500
+#define MAX_ROADS 124750
+
+typedef struct {
+    int cityU;
+    int cityV;
+    int length;
+} Road;
+
+int findNextVertex(int distances[], bool visited[], int numCities) {
+    int minDist = INT_MAX;
+    int minDistVertex = -1;
+
+    for (int v = 1; v <= numCities; v++) {
+        if (!visited[v] && distances[v] < minDist) {
+            minDist = distances[v];
+            minDistVertex = v;
+        }
+    }
+
+    return minDistVertex;
+}
+
+int calculateMinRoadSoma(Road roads[], int numCities, int numRoads) {
+    int distances[MAX_CITIES + 1];
+    bool visited[MAX_CITIES + 1];
+
+    for (int i = 1; i <= numCities; i++) {
+        distances[i] = INT_MAX;
+        visited[i] = false;
+    }
+
+    distances[1] = 0;
+
+    for (int i = 1; i <= numCities; i++) {
+        int currentVertex = findNextVertex(distances, visited, numCities);
+        visited[currentVertex] = true;
+
+        for (int j = 0; j < numRoads; j++) {
+            if (roads[j].cityU == currentVertex || roads[j].cityV == currentVertex) {
+                int adjacentVertex = (roads[j].cityU == currentVertex) ? roads[j].cityV : roads[j].cityU;
+                int roadLength = roads[j].length;
+
+                if (!visited[adjacentVertex] && roadLength < distances[adjacentVertex]) {
+                    distances[adjacentVertex] = roadLength;
+                }
+            }
+        }
+    }
+
+    int minRoadSoma = 0;
+    for (int i = 1; i <= numCities; i++) {
+        minRoadSoma += distances[i];
+    }
+
+    return minRoadSoma;
+}
+
+int main() {
+    int numCities, numRoads;
+    Road roads[MAX_ROADS];
+
+    scanf("%d %d", &numCities, &numRoads);
+
+    for (int i = 0; i < numRoads; i++) {
+        scanf("%d %d %d", &roads[i].cityU, &roads[i].cityV, &roads[i].length);
+    }
+
+    int minRoadSoma = calculateMinRoadSoma(roads, numCities, numRoads);
+
+    printf("%d\n", minRoadSoma);
+
+    return 0;
+}
